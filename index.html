@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Battle Game</title>
+  <title>Chase Game</title>
 </head>
 <body style="margin:0; overflow:hidden; background:black;">
 <canvas id="game"></canvas>
@@ -18,7 +18,8 @@ let player = { x: 100, y: 100, size: 50 };
 let enemy = { 
   x: Math.random() * (canvas.width - 50), 
   y: Math.random() * (canvas.height - 50), 
-  size: 50 
+  size: 50,
+  speed: 2
 };
 
 let score = 0;
@@ -33,6 +34,12 @@ function draw() {
     ctx.fillText("GAME OVER", canvas.width/2 - 120, canvas.height/2);
     return;
   }
+
+  // 敵がプレイヤーを追いかける
+  if (player.x > enemy.x) enemy.x += enemy.speed;
+  if (player.x < enemy.x) enemy.x -= enemy.speed;
+  if (player.y > enemy.y) enemy.y += enemy.speed;
+  if (player.y < enemy.y) enemy.y -= enemy.speed;
 
   // プレイヤー
   ctx.fillStyle = "lime";
