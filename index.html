@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>My First Game</title>
+</head>
+<body style="margin:0; overflow:hidden; background:black;">
+<canvas id="game"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let x = 100;
+let y = 100;
+let size = 50;
+let score = 0;
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 四角
+  ctx.fillStyle = "lime";
+  ctx.fillRect(x, y, size, size);
+
+  // スコア表示
+  ctx.fillStyle = "white";
+  ctx.font = "20px Arial";
+  ctx.fillText("Score: " + score, 20, 30);
+
+  requestAnimationFrame(draw);
+}
+
+// タップで移動 + スコア増加
+document.addEventListener("touchstart", e => {
+  x = e.touches[0].clientX - size/2;
+  y = e.touches[0].clientY - size/2;
+  score++;
+});
+
+draw();
+</script>
+</body>
+</html>
