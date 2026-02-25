@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Chase Game</title>
+  <title>Chaos Mode</title>
 </head>
 <body style="margin:0; overflow:hidden; background:black;">
 <canvas id="game"></canvas>
@@ -14,13 +14,18 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let player = { x: 100, y: 100, size: 50 };
-let enemy = { 
-  x: Math.random() * (canvas.width - 50), 
-  y: Math.random() * (canvas.height - 50), 
-  size: 50,
-  speed: 2
-};
+let player = { x: 100, y: 100, size: 40 };
+
+let enemies = [];
+
+for (let i = 0; i < 5; i++) {
+  enemies.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: 40,
+    speed: 1 + Math.random() * 2
+  });
+}
 
 let score = 0;
 let gameOver = false;
@@ -35,39 +40,39 @@ function draw() {
     return;
   }
 
-  // 敵がプレイヤーを追いかける
-  if (player.x > enemy.x) enemy.x += enemy.speed;
-  if (player.x < enemy.x) enemy.x -= enemy.speed;
-  if (player.y > enemy.y) enemy.y += enemy.speed;
-  if (player.y < enemy.y) enemy.y -= enemy.speed;
-
-  // プレイヤー
+  // プレイヤー描画
   ctx.fillStyle = "lime";
   ctx.fillRect(player.x, player.y, player.size, player.size);
 
-  // 敵
-  ctx.fillStyle = "red";
-  ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+  // 敵処理
+  enemies.forEach(enemy => {
 
-  // スコア
+    if (player.x > enemy.x) enemy.x += enemy.speed;
+    if (player.x < enemy.x) enemy.x -= enemy.speed;
+    if (player.y > enemy.y) enemy.y += enemy.speed;
+    if (player.y < enemy.y) enemy.y -= enemy.speed;
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+
+    // 当たり判定
+    if (
+      player.x < enemy.x + enemy.size &&
+      player.x + player.size > enemy.x &&
+      player.y < enemy.y + enemy.size &&
+      player.y + player.size > enemy.y
+    ) {
+      gameOver = true;
+    }
+  });
+
   ctx.fillStyle = "white";
   ctx.font = "20px Arial";
   ctx.fillText("Score: " + score, 20, 30);
 
-  // 当たり判定
-  if (
-    player.x < enemy.x + enemy.size &&
-    player.x + player.size > enemy.x &&
-    player.y < enemy.y + enemy.size &&
-    player.y + player.size > enemy.y
-  ) {
-    gameOver = true;
-  }
-
   requestAnimationFrame(draw);
 }
 
-// タップ移動
 document.addEventListener("touchstart", e => {
   if (!gameOver) {
     player.x = e.touches[0].clientX - player.size/2;
