@@ -1,34 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Chaos Mode</title>
-</head>
-<body style="margin:0; overflow:hidden; background:black;">
-<canvas id="game"></canvas>
-
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let player = { x: 100, y: 100, size: 40 };
-
-let enemies = [];
-
-for (let i = 0; i < 30; i++) {
-  enemies.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    size: 60,
-    speed: 1 + Math.random() * 2
-  });
-}
-
-let score = 0;
-let gameOver = false;
+let gameClear = false; // クリア判定
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -40,13 +11,19 @@ function draw() {
     return;
   }
 
+  if (gameClear) {
+    ctx.fillStyle = "yellow";
+    ctx.font = "80px serif";
+    ctx.fillText("クリア！おめでとう！", canvas.width/2 - 400, canvas.height/2);
+    return;
+  }
+
   // プレイヤー描画
   ctx.fillStyle = "lime";
   ctx.fillRect(player.x, player.y, player.size, player.size);
 
   // 敵処理
   enemies.forEach(enemy => {
-
     if (player.x > enemy.x) enemy.x += enemy.speed;
     if (player.x < enemy.x) enemy.x -= enemy.speed;
     if (player.y > enemy.y) enemy.y += enemy.speed;
@@ -66,15 +43,21 @@ function draw() {
     }
   });
 
+  // スコア描画
   ctx.fillStyle = "white";
-  ctx.font = "30px Arial";
-  ctx.fillText("Score: " + score, 20, 30);
+  ctx.font = "50px Arial"; // スコア大きくした
+  ctx.fillText("Score: " + score, 20, 60);
+
+  // スコアが30に達したらクリア
+  if (score >= 30) {
+    gameClear = true;
+  }
 
   requestAnimationFrame(draw);
 }
 
 document.addEventListener("touchstart", e => {
-  if (!gameOver) {
+  if (!gameOver && !gameClear) { // クリア後は操作無効
     player.x = e.touches[0].clientX - player.size/2;
     player.y = e.touches[0].clientY - player.size/2;
     score++;
@@ -83,5 +66,3 @@ document.addEventListener("touchstart", e => {
 
 draw();
 </script>
-</body>
-</html>
