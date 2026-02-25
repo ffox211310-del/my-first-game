@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>My First Game</title>
+  <title>Battle Game</title>
 </head>
 <body style="margin:0; overflow:hidden; background:black;">
 <canvas id="game"></canvas>
@@ -14,31 +14,59 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let x = 100;
-let y = 100;
-let size = 50;
+let player = { x: 100, y: 100, size: 50 };
+let enemy = { 
+  x: Math.random() * (canvas.width - 50), 
+  y: Math.random() * (canvas.height - 50), 
+  size: 50 
+};
+
 let score = 0;
+let gameOver = false;
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 四角
-  ctx.fillStyle = "lime";
-  ctx.fillRect(x, y, size, size);
+  if (gameOver) {
+    ctx.fillStyle = "white";
+    ctx.font = "40px Arial";
+    ctx.fillText("GAME OVER", canvas.width/2 - 120, canvas.height/2);
+    return;
+  }
 
-  // スコア表示
+  // プレイヤー
+  ctx.fillStyle = "lime";
+  ctx.fillRect(player.x, player.y, player.size, player.size);
+
+  // 敵
+  ctx.fillStyle = "red";
+  ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+
+  // スコア
   ctx.fillStyle = "white";
   ctx.font = "20px Arial";
   ctx.fillText("Score: " + score, 20, 30);
 
+  // 当たり判定
+  if (
+    player.x < enemy.x + enemy.size &&
+    player.x + player.size > enemy.x &&
+    player.y < enemy.y + enemy.size &&
+    player.y + player.size > enemy.y
+  ) {
+    gameOver = true;
+  }
+
   requestAnimationFrame(draw);
 }
 
-// タップで移動 + スコア増加
+// タップ移動
 document.addEventListener("touchstart", e => {
-  x = e.touches[0].clientX - size/2;
-  y = e.touches[0].clientY - size/2;
-  score++;
+  if (!gameOver) {
+    player.x = e.touches[0].clientX - player.size/2;
+    player.y = e.touches[0].clientY - player.size/2;
+    score++;
+  }
 });
 
 draw();
