@@ -22,7 +22,7 @@ for (let i = 0; i < 30; i++) {
   enemies.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    size: 40,
+    size: 60,
     speed: 1 + Math.random() * 2
   });
 }
@@ -67,7 +67,7 @@ function draw() {
   });
 
   ctx.fillStyle = "white";
-  ctx.font = "20px Arial";
+  ctx.font = "50px Arial";
   ctx.fillText("Score: " + score, 20, 30);
 
   requestAnimationFrame(draw);
