@@ -1,22 +1,5 @@
-<script>
-let gameClear = false; // クリア判定
-
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  if (gameOver) {
-    ctx.fillStyle = "white";
-    ctx.font = "80px serif";
-    ctx.fillText("どんまい 笑", canvas.width/2 - 200, canvas.height/2);
-    return;
-  }
-
-  if (gameClear) {
-    ctx.fillStyle = "yellow";
-    ctx.font = "80px serif";
-    ctx.fillText("クリア！おめでとう！", canvas.width/2 - 400, canvas.height/2);
-    return;
-  }
 
   // プレイヤー描画
   ctx.fillStyle = "lime";
@@ -45,7 +28,7 @@ function draw() {
 
   // スコア描画
   ctx.fillStyle = "white";
-  ctx.font = "50px Arial"; // スコア大きくした
+  ctx.font = "50px Arial";
   ctx.fillText("Score: " + score, 20, 60);
 
   // スコアが30に達したらクリア
@@ -53,16 +36,16 @@ function draw() {
     gameClear = true;
   }
 
+  // ゲームオーバー / クリア画面の文字を上書き
+  if (gameOver) {
+    ctx.fillStyle = "white";
+    ctx.font = "80px serif";
+    ctx.fillText("どんまい 笑", canvas.width/2 - 200, canvas.height/2);
+  } else if (gameClear) {
+    ctx.fillStyle = "yellow";
+    ctx.font = "80px serif";
+    ctx.fillText("クリア！おめでとう！", canvas.width/2 - 400, canvas.height/2);
+  }
+
   requestAnimationFrame(draw);
 }
-
-document.addEventListener("touchstart", e => {
-  if (!gameOver && !gameClear) { // クリア後は操作無効
-    player.x = e.touches[0].clientX - player.size/2;
-    player.y = e.touches[0].clientY - player.size/2;
-    score++;
-  }
-});
-
-draw();
-</script>
